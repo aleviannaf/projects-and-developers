@@ -6,7 +6,7 @@ const developersRouter: Router = Router()
 
 developersRouter.post("", middlewares.uniqueEmail, developersControllers.create)
 developersRouter.get("", developersControllers.retrieve)
-developersRouter.get("/:id", developersControllers.retrieveForId)
+developersRouter.get("/:id", middlewares.checkIdDeveloper, developersControllers.retrieveForId)
 developersRouter.post("/:id/infos", developersControllers.createInfos)
 
 export default developersRouter
