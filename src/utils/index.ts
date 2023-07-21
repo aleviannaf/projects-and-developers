@@ -1,5 +1,7 @@
-import transformarDataUtils from "./transformsData.utils";
+import transformarDataUtils from "./transformsData.utils"
+import validatePayloadDeveloper from "./validatadePayloadDeveloper.utils"
 
-export {
-    transformarDataUtils
+export default {
+    transformarDataUtils,
+    validatePayloadDeveloper
 }
