@@ -1,15 +1,17 @@
 import format from "pg-format";
-import { IDeveloper, Infos, TDevelorRequest, TInfosRequest } from "../interfaces";
+import { IDeveloper, Infos, TDeveloperRequiredKeyes, TDevelorRequest, TInfosRequest } from "../interfaces";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "../database";
-import { transformarDataUtils } from "../utils";
+import utils from "../utils";
 
 const create = async (payload: TDevelorRequest): Promise<IDeveloper> => {
 
+    const filteredPayload = utils.validatePayloadDeveloper(payload)
+
     const queryFormat: string = format(
         `INSERT INTO "developers" (%I) VALUES  (%L) RETURNING *;`,
-        Object.keys(payload),
-        Object.values(payload)
+        Object.keys(filteredPayload),
+        Object.values(filteredPayload)
     )
 
     const queryResul: QueryResult<IDeveloper> = await client.query(queryFormat)
@@ -59,22 +61,22 @@ const retrieveForId = async (developerId: number): Promise<any> => {
         WHERE d.id = $1;
   `;
 
-  const queryConfig: QueryConfig = {
-    text: queryTemplate,
-    values: [ developerId ]
-  }
+    const queryConfig: QueryConfig = {
+        text: queryTemplate,
+        values: [developerId]
+    }
 
     const queryResul: QueryResult = await client.query(queryConfig)
 
     return queryResul.rows[0]
 }
 
-const createInfos = async (payload: TInfosRequest): Promise<Infos> =>{
+const createInfos = async (payload: TInfosRequest): Promise<Infos> => {
 
-    const { developerSince: data }  = payload
-    const newDate = transformarDataUtils(`${data}`)
-    
-    payload.developerSince = new Date( newDate)
+    const { developerSince: data } = payload
+    const newDate = utils.transformarDataUtils(`${data}`)
+
+    payload.developerSince = new Date(newDate)
 
     const queryString: string = format(
         `INSERT INTO 
@@ -85,7 +87,7 @@ const createInfos = async (payload: TInfosRequest): Promise<Infos> =>{
         `,
         Object.keys(payload),
         Object.values(payload)
-    ) 
+    )
 
     const queryResult: QueryResult<Infos> = await client.query(queryString)
 
