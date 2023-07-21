@@ -1,5 +1,5 @@
 import { IDeveloper, TDeveloperUpdate, TDevelorRequest, TDeveloperRequiredKeyes } from "./developers.interfaces"
-import { Infos, TInfosRequest, TInfosUpdate } from "./infos.interfaces"
+import { Infos, TInfosRequest, TInfosUpdate, TInfosRequiredKeyes} from "./infos.interfaces"
 
 export {
     IDeveloper, 
@@ -8,5 +8,6 @@ export {
     TDeveloperRequiredKeyes,
     Infos, 
     TInfosRequest, 
-    TInfosUpdate
+    TInfosUpdate,
+    TInfosRequiredKeyes
 }

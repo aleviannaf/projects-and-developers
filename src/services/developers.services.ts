@@ -76,6 +76,8 @@ const createInfos = async (payload: TInfosRequest): Promise<Infos> => {
     const { developerSince: data } = payload
     const newDate = utils.transformarDataUtils(`${data}`)
 
+    const filteredPayload = utils.validatePayloadInfos(payload)
+
     payload.developerSince = new Date(newDate)
 
     const queryString: string = format(
@@ -85,8 +87,8 @@ const createInfos = async (payload: TInfosRequest): Promise<Infos> => {
             (%L)
         RETURNING *;
         `,
-        Object.keys(payload),
-        Object.values(payload)
+        Object.keys(filteredPayload),
+        Object.values(filteredPayload)
     )
 
     const queryResult: QueryResult<Infos> = await client.query(queryString)
