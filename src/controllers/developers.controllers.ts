@@ -26,8 +26,8 @@ const retrieveForId = async (request: Request, response: Response): Promise<Resp
 
 const createInfos = async (request: Request, response: Response): Promise<Response> => {
     
-
-    const infos = await developersServices.createInfos(request.body)
+    const id: number = parseInt(request.params.id)
+    const infos = await developersServices.createInfos(request.body, id)
 
     return response.status(201).json(infos)
 }

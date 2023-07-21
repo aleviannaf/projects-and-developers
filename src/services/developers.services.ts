@@ -3,6 +3,7 @@ import { IDeveloper, Infos, TDeveloperRequiredKeyes, TDevelorRequest, TInfosRequ
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "../database";
 import utils from "../utils";
+import { AppError } from "../error";
 
 const create = async (payload: TDevelorRequest): Promise<IDeveloper> => {
 
@@ -71,14 +72,23 @@ const retrieveForId = async (developerId: number): Promise<any> => {
     return queryResul.rows[0]
 }
 
-const createInfos = async (payload: TInfosRequest): Promise<Infos> => {
+const createInfos = async (payload: TInfosRequest, developerId: number): Promise<Infos> => {
 
     const { developerSince: data } = payload
     const newDate = utils.transformarDataUtils(`${data}`)
-
     const filteredPayload = utils.validatePayloadInfos(payload)
-
     payload.developerSince = new Date(newDate)
+
+
+    const checkExistInfo: QueryResult = await client.query(
+        `SELECT "developerInfoId" FROM "developers" WHERE id = $1;`,
+        [developerId]
+    )
+
+    if (checkExistInfo.rows[0].developerInfoId != null) {
+        throw new AppError("Developer alredy has infos", 409)
+    }
+
 
     const queryString: string = format(
         `INSERT INTO 
@@ -91,10 +101,15 @@ const createInfos = async (payload: TInfosRequest): Promise<Infos> => {
         Object.values(filteredPayload)
     )
 
-    const queryResult: QueryResult<Infos> = await client.query(queryString)
+    const queryResultInfo: QueryResult<Infos> = await client.query(queryString)
 
 
-    return queryResult.rows[0]
+    await client.query(
+        `UPDATE developers set("developerInfoId") = ROW($1)  WHERE id = $2;`,
+        [queryResultInfo.rows[0].id, developerId]
+    )
+
+    return queryResultInfo.rows[0]
 }
 
 export default { create, retrieve, retrieveForId, createInfos }
