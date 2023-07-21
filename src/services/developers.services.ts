@@ -1,7 +1,8 @@
 import format from "pg-format";
-import { IDeveloper, TDevelorRequest } from "../interfaces";
+import { IDeveloper, Infos, TDevelorRequest, TInfosRequest } from "../interfaces";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "../database";
+import { transformarDataUtils } from "../utils";
 
 const create = async (payload: TDevelorRequest): Promise<IDeveloper> => {
 
@@ -68,4 +69,28 @@ const retrieveForId = async (developerId: number): Promise<any> => {
     return queryResul.rows[0]
 }
 
-export default { create, retrieve, retrieveForId }
+const createInfos = async (payload: TInfosRequest): Promise<Infos> =>{
+
+    const { developerSince: data }  = payload
+    const newDate = transformarDataUtils(`${data}`)
+    
+    payload.developerSince = new Date( newDate)
+
+    const queryString: string = format(
+        `INSERT INTO 
+            "developer_infos" (%I) 
+        VALUES 
+            (%L)
+        RETURNING *;
+        `,
+        Object.keys(payload),
+        Object.values(payload)
+    ) 
+
+    const queryResult: QueryResult<Infos> = await client.query(queryString)
+
+
+    return queryResult.rows[0]
+}
+
+export default { create, retrieve, retrieveForId, createInfos }

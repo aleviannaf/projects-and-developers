@@ -24,4 +24,13 @@ const retrieveForId = async (request: Request, response: Response): Promise<Resp
     return response.status(200).json(data)
 }
 
-export default { create, retrieve, retrieveForId }
+const createInfos = async (request: Request, response: Response): Promise<Response> => {
+    
+
+    const infos = await developersServices.createInfos(request.body)
+
+    return response.status(201).json(infos)
+}
+
+
+export default { create, retrieve, retrieveForId, createInfos }
