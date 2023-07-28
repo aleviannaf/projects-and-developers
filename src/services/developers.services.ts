@@ -156,4 +156,25 @@ const updateInfo = async (payload: TInfosUpdate, infoId: number): Promise<Infos>
     return queryResult.rows[0]
 }
 
-export default { create, retrieve, retrieveForId, createInfos, updateDeveloper, updateInfo }
+const deleteDeloper = async (developerId: string): Promise<void> =>{
+    
+    const querySrting: string = `
+        DELETE FROM developers WHERE id = $1;
+    `
+    const queryConfig: QueryConfig = {
+        text: querySrting,
+        values: [developerId]
+    }
+
+    await client.query(queryConfig)
+}
+
+export default { 
+    create, 
+    retrieve, 
+    retrieveForId, 
+    createInfos, 
+    updateDeveloper, 
+    updateInfo, 
+    deleteDeloper 
+}
