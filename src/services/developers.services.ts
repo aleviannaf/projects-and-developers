@@ -1,5 +1,5 @@
 import format from "pg-format";
-import { IDeveloper, Infos, TDeveloperRequiredKeyes, TDeveloperUpdate, TDevelorRequest, TInfosRequest } from "../interfaces";
+import { IDeveloper, Infos, TDeveloperRequiredKeyes, TDeveloperUpdate, TDevelorRequest, TInfosRequest, TInfosUpdate } from "../interfaces";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "../database";
 import utils from "../utils";
@@ -116,9 +116,9 @@ const updateDeveloper = async (payload: TDeveloperUpdate, developerId: number): 
     const filteredPayload = utils.validateDeveloperUpdate(payload)
 
     const queryString: string = format(
-      `UPDATE developers set(%I) = ROW(%L)  WHERE id = $1 RETURNING *;`,
-      Object.keys(filteredPayload),
-      Object.values(filteredPayload)
+        `UPDATE developers set(%I) = ROW(%L)  WHERE id = $1 RETURNING *;`,
+        Object.keys(filteredPayload),
+        Object.values(filteredPayload)
     )
 
     const queryConfig: QueryConfig = {
@@ -126,9 +126,34 @@ const updateDeveloper = async (payload: TDeveloperUpdate, developerId: number): 
         values: [developerId]
     }
 
-    const queryResult: QueryResult<IDeveloper> =  await client.query(queryConfig)
+    const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig)
 
     return queryResult.rows[0]
 }
 
-export default { create, retrieve, retrieveForId, createInfos, updateDeveloper}
+
+const updateInfo = async (payload: TInfosUpdate, infoId: number): Promise<Infos> => {
+    const filteredPayload = utils.validateInfoUpdate(payload)
+
+    const checkExistInfo: QueryResult = await client.query(
+        `SELECT "developerInfoId" FROM "developers" WHERE id = $1;`,
+        [infoId]
+    )
+
+    const queryString: string = format(
+        `UPDATE "developer_infos" set(%I) = ROW(%L)  WHERE id = $1 RETURNING *;`,
+        Object.keys(filteredPayload),
+        Object.values(filteredPayload)
+    )
+
+    const queryConfig: QueryConfig = {
+        text: queryString,
+        values: [checkExistInfo.rows[0].developerInfoId]
+    }
+
+    const queryResult: QueryResult<Infos> = await client.query(queryConfig)
+
+    return queryResult.rows[0]
+}
+
+export default { create, retrieve, retrieveForId, createInfos, updateDeveloper, updateInfo }

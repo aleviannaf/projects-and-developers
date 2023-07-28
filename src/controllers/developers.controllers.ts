@@ -24,6 +24,13 @@ const retrieveForId = async (request: Request, response: Response): Promise<Resp
     return response.status(200).json(data)
 }
 
+const updateDeveloper = async (request: Request, response: Response): Promise<Response> => {
+    const id: number = parseInt(request.params.id)
+    const newDeveloper = await developersServices.updateDeveloper(request.body, id)
+
+    return response.status(200).json(newDeveloper)
+}
+
 const createInfos = async (request: Request, response: Response): Promise<Response> => {
 
     const id: number = parseInt(request.params.id)
@@ -32,12 +39,12 @@ const createInfos = async (request: Request, response: Response): Promise<Respon
     return response.status(201).json(infos)
 }
 
-const updateDeveloper = async (request: Request, response: Response): Promise<Response> => {
+const updateInfo= async (request: Request, response: Response): Promise<Response> => {
     const id: number = parseInt(request.params.id)
-    const newDeveloper = await developersServices.updateDeveloper(request.body, id)
+    const newInfo = await developersServices.updateInfo(request.body, id)
 
-    return response.status(200).json(newDeveloper)
+    return response.status(200).json(newInfo)
 }
 
 
-    export default { create, retrieve, retrieveForId, createInfos, updateDeveloper}
+    export default { create, retrieve, retrieveForId, createInfos, updateDeveloper, updateInfo}
