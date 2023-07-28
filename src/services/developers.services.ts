@@ -1,5 +1,5 @@
 import format from "pg-format";
-import { IDeveloper, Infos, TDeveloperRequiredKeyes, TDevelorRequest, TInfosRequest } from "../interfaces";
+import { IDeveloper, Infos, TDeveloperRequiredKeyes, TDeveloperUpdate, TDevelorRequest, TInfosRequest } from "../interfaces";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "../database";
 import utils from "../utils";
@@ -112,4 +112,23 @@ const createInfos = async (payload: TInfosRequest, developerId: number): Promise
     return queryResultInfo.rows[0]
 }
 
-export default { create, retrieve, retrieveForId, createInfos }
+const updateDeveloper = async (payload: TDeveloperUpdate, developerId: number): Promise<IDeveloper> => {
+    const filteredPayload = utils.validateDeveloperUpdate(payload)
+
+    const queryString: string = format(
+      `UPDATE developers set(%I) = ROW(%L)  WHERE id = $1 RETURNING *;`,
+      Object.keys(filteredPayload),
+      Object.values(filteredPayload)
+    )
+
+    const queryConfig: QueryConfig = {
+        text: queryString,
+        values: [developerId]
+    }
+
+    const queryResult: QueryResult<IDeveloper> =  await client.query(queryConfig)
+
+    return queryResult.rows[0]
+}
+
+export default { create, retrieve, retrieveForId, createInfos, updateDeveloper}
