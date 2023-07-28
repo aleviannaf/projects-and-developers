@@ -5,9 +5,12 @@ import middlewares from "../middlewares";
 const developersRouter: Router = Router()
 
 developersRouter.post("", middlewares.uniqueEmail, developersControllers.create)
+developersRouter.post("/:id/infos", middlewares.checkIdDeveloper, developersControllers.createInfos)
+
 developersRouter.get("", developersControllers.retrieve)
 developersRouter.get("/:id", middlewares.checkIdDeveloper, developersControllers.retrieveForId)
-developersRouter.post("/:id/infos", middlewares.checkIdDeveloper, developersControllers.createInfos)
+
+developersRouter.delete("/:id", middlewares.checkIdDeveloper, developersControllers.deleteDeveloper )
 
 developersRouter.patch(
     "/:id", 
