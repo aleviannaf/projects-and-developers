@@ -12,19 +12,21 @@ create table if not EXISTS developers(
     "email" VARCHAR(50) unique not null,
     "developerInfoId" INTEGER UNIQUE,
     FOREIGN KEY("developerInfoId") REFERENCES developer_infos(id)
-    ON DELETE CASCADE
 );
 
 
-create table if not exists "projects"(
-    id SERIAL primary key,
-    "name" VARCHAR(50) not null,
-    "description" TEXT not null,
-    "estimatedTime" VARCHAR(20) not null,
-    "repository" VARCHAR(120) not null,
-    "startDate" TIMESTAMP not null,
-    "endDate" TIMESTAMP
+CREATE TABLE IF NOT EXISTS projects (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    estimatedTime VARCHAR(20) NOT NULL,
+    repository VARCHAR(120) NOT NULL,
+    startDate TIMESTAMP NOT NULL,
+    endDate TIMESTAMP,
+    developerId INTEGER,
+    FOREIGN KEY (developerId) REFERENCES developers (id) ON DELETE SET NULL
 );
+
 
 create type "tech" as ENUM(
     'JavaScript',
@@ -40,7 +42,11 @@ create type "tech" as ENUM(
 
 create table if not exists "technologies"(id SERIAL primary key, name "tech" not null);
 
-create table if not exists "projects_technologies"(
-    id SERIAL primary key,
-    addedIn TIMESTAMP not NULL
+CREATE TABLE IF NOT EXISTS projects_technologies (
+    id SERIAL PRIMARY KEY,
+    projectId INTEGER NOT NULL,
+    technologyId INTEGER NOT NULL,
+    addedIn TIMESTAMP NOT NULL,
+    FOREIGN KEY (projectId) REFERENCES projects (id) ON DELETE CASCADE,
+    FOREIGN KEY (technologyId) REFERENCES technologies (id) ON DELETE CASCADE
 );
