@@ -1,13 +1,13 @@
-import transformarDataUtils from "./transformsData.utils"
 import validatePayloadDeveloper from "./validatadePayloadDeveloper.utils"
 import validatePayloadInfos from "./validatadePayloadInfos.utils"
 import validateDeveloperUpdate from "./validateDeveloperUpdate.util"
 import validateInfoUpdate from "./validateInfoUpdate.util"
+import validateProjectKeys from "./validateProjectKeys.utils"
 
 export default {
-    transformarDataUtils,
     validatePayloadDeveloper,
     validatePayloadInfos,
     validateDeveloperUpdate,
-    validateInfoUpdate 
+    validateInfoUpdate,
+    validateProjectKeys 
 }

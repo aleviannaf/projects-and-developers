@@ -1,6 +1,5 @@
-import utils from "."
 import { AppError } from "../error"
-import {  TInfosRequest, TInfosRequiredKeyes, TInfosUpdate } from "../interfaces"
+import {  TInfosRequest, TInfosRequiredKeyes } from "../interfaces"
 
 const validateInfoUpdate = (payload: any): Partial<TInfosRequest> => {
     const filteredPayload: Partial<TInfosRequest> = {}
