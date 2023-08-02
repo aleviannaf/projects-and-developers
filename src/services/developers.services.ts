@@ -74,10 +74,9 @@ const retrieveForId = async (developerId: number): Promise<any> => {
 
 const createInfos = async (payload: TInfosRequest, developerId: number): Promise<Infos> => {
 
-    const { developerSince: data } = payload
-    const newDate = utils.transformarDataUtils(`${data}`)
+
     const filteredPayload = utils.validatePayloadInfos(payload)
-    payload.developerSince = new Date(newDate)
+  
 
 
     const checkExistInfo: QueryResult = await client.query(
